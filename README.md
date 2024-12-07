@@ -55,6 +55,7 @@ The app uses the following dependencies (see `requirements.txt`):
 - Streamlit: For building the web interface.
 - NumPy: For numerical computations.
 - Pandas: For data processing.
+- Pytest: For unit testing.
 
 ## Author's Note
 I developed this simple transportation optimization app, featuring Dijkstra and Clark-Wright routing algorithms, to address the challenges I encountered during my learning journey in [SC0x Supply Chain Analytics](https://www.edx.org/learn/supply-chain-design/massachusetts-institute-of-technology-supply-chain-analytics) by MITx CTL on EdX. The manual effort required for calculations, Excel interactions, and mapping made the process cumbersome and complex. Inspired by the insights gained from completing the [MicroMaster credential](https://ctl.mit.edu/education/online-education/mitx-micromastersr-program-supply-chain-management) and exposure to the [CAVE](https://sc-design.mitcave.com/) app in the [275x Advanced Supply Chain Systems Planning and Network Design](https://ctl.mit.edu/education/online-education/advanced-supply-chain-systems-planning-and-network-design-scm-275x) course, I created this app to automate calculations easily and make these algorithms more accessible. My goal is to help others overcome similar challenges and deepen their understanding of these optimization techniques. Thank you MIT CTL!
