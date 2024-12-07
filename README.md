@@ -1,11 +1,9 @@
-# Combo App for Transportation Optimization
+# Combo App for Transportation Optimization using routing algorithms
 
 This is a modular Streamlit-based application designed to solve transportation optimization problems. It includes two main functionalities:
 
 1. **Dijkstra's Algorithm** - Solves the single-source shortest path problem for graphs with non-negative edge weights.
 2. **Clark-Wright Savings Algorithm** - Optimizes vehicle routing based on savings.
-
-I developed this simple transportation optimization app, featuring Dijkstra and Clark-Wright algorithms, to address the challenges I encountered during my learning journey in SC0x Supply Chain Analytics by MITx CTL on EdX. The manual effort required for calculations, Excel interactions, and mapping made the process cumbersome and complex. Inspired by the insights gained from completing the MicroMaster credential and exposure to the CAVE app in the 275x Advanced Supply Chain Systems Planning and Network Design course, I created this app to automate calculations easily and make these algorithms more accessible. My goal is to help others overcome similar challenges and deepen their understanding of these optimization techniques.
 
 ## File Structure
 ```
@@ -53,4 +51,6 @@ The app uses the following dependencies (see `requirements.txt`):
 - Streamlit: For building the web interface.
 - NumPy: For numerical computations.
 - Pandas: For data processing.
-# routing_algorithm
+
+Author's Note: I developed this simple transportation optimization app, featuring Dijkstra and Clark-Wright algorithms, to address the challenges I encountered during my learning journey in SC0x Supply Chain Analytics by MITx CTL on EdX. The manual effort required for calculations, Excel interactions, and mapping made the process cumbersome and complex. Inspired by the insights gained from completing the MicroMaster credential and exposure to the CAVE app in the 275x Advanced Supply Chain Systems Planning and Network Design course, I created this app to automate calculations easily and make these algorithms more accessible. My goal is to help others overcome similar challenges and deepen their understanding of these optimization techniques. Thank you MIT CTL!
+
