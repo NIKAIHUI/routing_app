@@ -7,7 +7,7 @@ This is a modular Streamlit-based application designed to solve transportation o
 
 ## File Structure
 ```
-combo_app/
+routing_app/
 ├── app.py                # Entry point for the Streamlit app
 ├── algorithms/
 │   ├── dijkstra.py       # Implementation of Dijkstra's algorithm
@@ -15,6 +15,10 @@ combo_app/
 ├── navigation/
 │   ├── dijkstra_page.py  # UI logic for Dijkstra's algorithm
 │   ├── clark_wright_page.py # UI logic for Clark-Wright algorithm
+├── tests/
+│   ├── test_clark_wright.py  # Unit tests for Clark_wright algorithm
+│   ├── test_dijkstra.py  # Unit tests for Dijkstra's algorithm
+│   ├── test_pages.py  # Unit tests for redenring the pages
 ```
 
 ## Installation
