@@ -1,0 +1,56 @@
+# Combo App for Transportation Optimization
+
+This is a modular Streamlit-based application designed to solve transportation optimization problems. It includes two main functionalities:
+
+1. **Dijkstra's Algorithm** - Solves the single-source shortest path problem for graphs with non-negative edge weights.
+2. **Clark-Wright Savings Algorithm** - Optimizes vehicle routing based on savings.
+
+I developed this simple transportation optimization app, featuring Dijkstra and Clark-Wright algorithms, to address the challenges I encountered during my learning journey in SC0x Supply Chain Analytics by MITx CTL on EdX. The manual effort required for calculations, Excel interactions, and mapping made the process cumbersome and complex. Inspired by the insights gained from completing the MicroMaster credential and exposure to the CAVE app in the 275x Advanced Supply Chain Systems Planning and Network Design course, I created this app to automate calculations easily and make these algorithms more accessible. My goal is to help others overcome similar challenges and deepen their understanding of these optimization techniques.
+
+## File Structure
+```
+combo_app/
+├── app.py                # Entry point for the Streamlit app
+├── algorithms/
+│   ├── dijkstra.py       # Implementation of Dijkstra's algorithm
+│   ├── clark_wright.py   # Implementation of Clark-Wright savings algorithm
+├── navigation/
+│   ├── dijkstra_page.py  # UI logic for Dijkstra's algorithm
+│   ├── clark_wright_page.py # UI logic for Clark-Wright algorithm
+```
+
+## Installation
+1. Clone the repository or download the ZIP file.
+2. Navigate to the project directory.
+
+- (Optional) Install [pyenv](https://github.com/pyenv/pyenv#installation)
+  - pyenv helps manage locally installed versions of python, we'll be using 3.11 for this project
+  - After installing, ensure the correct version of python is installed:
+    - `$ pyenv install`
+  - Verify:
+    ```shell
+    $ python --version
+    Python 3.11.1
+    ```
+   - Create a [virtual environment](https://docs.python.org/3/library/venv.html#creating-virtual-environments):
+   - `$ python3.11 -m venv ./env`
+   - Activate environment:
+   - `$ source ./env/bin/activate`
+   - You will know that this is successful if you see `(env)` at the start of your shell prompt
+
+## How to Run
+1. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. Run the application:
+   ```bash
+   streamlit run app.py
+   ```
+
+## Dependencies
+The app uses the following dependencies (see `requirements.txt`):
+- Streamlit: For building the web interface.
+- NumPy: For numerical computations.
+- Pandas: For data processing.
+# routing_algorithm
