@@ -74,8 +74,8 @@ def clark_wright_page():
                 distance_matrix.index.get_loc(route_nodes[-1]), depot_col
             ]  # Last node to Depot
         )
-
-    # File upload
+    
+    # Upload csv file
     uploaded_file = st.sidebar.file_uploader("Upload your populated CSV file*", type=["csv"])
 
     # Provide template download
@@ -99,12 +99,17 @@ def clark_wright_page():
         file_name="distance_template.csv",
         mime="text/csv",
     )
-    
+
+    # File handling and processing
     if uploaded_file:
-        # Load the file into a Pandas DataFrame
-        if uploaded_file.name.endswith(".csv"):
-            df = pd.read_csv(uploaded_file, index_col=0)
         try:
+            # Ensure the uploaded file is a CSV
+            if not uploaded_file.name.endswith(".csv"):
+                raise ValueError("Only CSV files are supported. Please upload a valid CSV file.")
+
+            # Load the CSV into a Pandas DataFrame
+            df = pd.read_csv(uploaded_file, index_col=0)
+
             # Transform the matrix to populate missing values symmetrically
             complete_distance_matrix, demands = transform_to_complete_matrix(df)
 
@@ -112,10 +117,11 @@ def clark_wright_page():
             complete_distance_matrix['Demand'] = demands
             complete_distance_matrix_display = display_matrix_with_dashes(complete_distance_matrix)
 
+            # Display the processed distance matrix
             st.subheader("Complete Distance Matrix with Demands")
             st.dataframe(complete_distance_matrix_display)
-            
-            st.sidebar.markdown("---") 
+
+            st.sidebar.markdown("---")
 
             # Ask for the maximum capacity
             max_capacity = st.sidebar.number_input("Enter the maximum capacity per tour:", min_value=1, value=50)
@@ -125,15 +131,18 @@ def clark_wright_page():
 
             # Display results
             st.subheader("Result")
-            st.write(f"How many tours needed? {len(routes)}")
+            st.write(f"How many tours are needed? {len(routes)}")
             for i, route in enumerate(routes):
                 route_nodes = [complete_distance_matrix.index[node] for node in route]
-                
+
                 # Calculate total distance for the current route
                 total_distance = calculate_route_distance(route_nodes, complete_distance_matrix)
-    
+
                 st.write(f"Tour {i + 1}: Depot -> {' -> '.join(route_nodes)} -> Depot. (Total Distance: {total_distance:.2f})")
+
         except Exception as e:
+            # Handle any errors that occur during processing
             st.error(f"An error occurred: {e}")
     else:
+        # Inform the user to upload a CSV file
         st.info("Please upload a populated CSV file from the sidebar to process the results ⚙️")
