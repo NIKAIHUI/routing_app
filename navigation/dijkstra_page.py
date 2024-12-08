@@ -58,7 +58,7 @@ def dijkstra_page():
         node_names_input = st.sidebar.text_area(
             "Enter node names (comma-separated):", value=",".join(st.session_state["node_names"])
         )
-        if st.sidebar.button("Set Node Names"):
+        if st.sidebar.button("Add"):
             node_names = [name.strip() for name in node_names_input.split(",") if name.strip()]
             if len(node_names) != len(set(node_names)):
                 st.sidebar.error("Duplicate node names found. Ensure all node names are unique.")
