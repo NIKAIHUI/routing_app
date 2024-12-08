@@ -24,13 +24,18 @@ def clark_wright_page():
         template_df['Demand'] = [10] * max_nodes + [0]  # Example demands
         return template_df
 
-    def transform_to_complete_matrix(dataframe):
+    def transform_to_complete_matrix(df):
         """
         Transform the uploaded matrix into a complete symmetric matrix.
         """
         # Extract the demand column and remove it from the distance matrix
-        demands = dataframe['Demand'].tolist()
-        distance_matrix = dataframe.iloc[:, :-1]
+        demands = df.iloc[:,-1].tolist()
+
+        # Drop columns with missing or unnamed headers
+        df = df.loc[:, ~df.columns.str.contains('^Unnamed', na=False)]
+        df = df.loc[:, ~df.columns.isnull()]
+        
+        distance_matrix = df.iloc[:, :-1]
         
         # Fill missing values symmetrically
         for i in range(len(distance_matrix)):
@@ -48,6 +53,27 @@ def clark_wright_page():
         """
         display_matrix = matrix.copy()
         return display_matrix.fillna('--')
+    
+    def calculate_route_distance(route_nodes, distance_matrix):
+        """
+        Calculate the total distance for a given route.
+        """
+        depot_row = -1  # Assuming 'Depot' is the last row
+        depot_col = -2  # Assuming 'Depot' is the second-to-last column
+
+        return (
+            distance_matrix.iloc[depot_row, distance_matrix.columns.get_loc(route_nodes[0])]  # Depot to first node
+            + sum(
+                distance_matrix.iloc[
+                    distance_matrix.index.get_loc(route_nodes[j]),
+                    distance_matrix.columns.get_loc(route_nodes[j + 1])
+                ]
+                for j in range(len(route_nodes) - 1)  # Between nodes in the route
+            )
+            + distance_matrix.iloc[
+                distance_matrix.index.get_loc(route_nodes[-1]), depot_col
+            ]  # Last node to Depot
+        )
 
     # File upload
     uploaded_file = st.sidebar.file_uploader("Upload your populated CSV file*", type=["csv", "xlsx"])
@@ -58,20 +84,21 @@ def clark_wright_page():
     template_df.to_csv(csv_template)
     csv_template.seek(0)
     
-    # Combine info text and button in a container
-    with st.sidebar.container():
-        st.markdown(
-            """
-            Use this template which contains distances between up to 20 nodes and the depot."""
-        )
+    # Download csv template
+    st.sidebar.markdown(
+        """
+        *Use this template provided.\\
+            You may rename the headers, but ensure the order matches the template.
+        """
+    )
 
-        # Place the download button inside the styled container
-        st.download_button(
-            label="Download 🔻",
-            data=csv_template,
-            file_name="distance_template.csv",
-            mime="text/csv",
-        )
+    # Place the download button inside the styled container
+    st.sidebar.download_button(
+        label="Download 🔻",
+        data=csv_template,
+        file_name="distance_template.csv",
+        mime="text/csv",
+    )
     
     if uploaded_file:
         # Load the file into a Pandas DataFrame
@@ -104,7 +131,11 @@ def clark_wright_page():
             st.write(f"How many tours needed? {len(routes)}")
             for i, route in enumerate(routes):
                 route_nodes = [complete_distance_matrix.index[node] for node in route]
-                st.write(f"Tour {i + 1}: Depot -> {' -> '.join(route_nodes)} -> Depot")
+                
+                # Calculate total distance for the current route
+                total_distance = calculate_route_distance(route_nodes, complete_distance_matrix)
+    
+                st.write(f"Tour {i + 1}: Depot -> {' -> '.join(route_nodes)} -> Depot. (Total Distance: {total_distance:.2f})")
         except Exception as e:
             st.error(f"An error occurred: {e}")
     else:
