@@ -41,15 +41,19 @@ routing_app/
    - You will know that this is successful if you see `(env)` at the start of your shell prompt
 
 ## How to Run
-1. Install dependencies:
+   Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
-2. Run the application:
+   Run the application:
    ```bash
    streamlit run app.py
    ```
-
+   Run tests
+   We have pytest for running tests. Remember to activate your virtual environment first!
+   ```shell
+   $ pytest
+   ```
 ## Dependencies
 The app uses the following dependencies (see `requirements.txt`):
 - Streamlit: For building the web interface.
