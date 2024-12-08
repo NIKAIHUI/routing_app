@@ -53,20 +53,26 @@ def clark_wright_page():
     uploaded_file = st.sidebar.file_uploader("Upload your populated CSV file*", type=["csv", "xlsx"])
 
     # Provide template download
-    st.sidebar.markdown("*Use this template which contains distances between up to 20 nodes and the depot.")
-
     template_df = create_template(max_nodes=20)
     csv_template = BytesIO()
     template_df.to_csv(csv_template)
     csv_template.seek(0)
+    
+    # Combine info text and button in a container
+    with st.sidebar.container():
+        st.markdown(
+            """
+            Use this template which contains distances between up to 20 nodes and the depot."""
+        )
 
-    st.sidebar.download_button(
-        label="Download Template🔻",
-        data=csv_template,
-        file_name="distance_template.csv",
-        mime="text/csv",
-    )
-
+        # Place the download button inside the styled container
+        st.download_button(
+            label="Download 🔻",
+            data=csv_template,
+            file_name="distance_template.csv",
+            mime="text/csv",
+        )
+    
     if uploaded_file:
         # Load the file into a Pandas DataFrame
         if uploaded_file.name.endswith(".csv"):
@@ -84,6 +90,8 @@ def clark_wright_page():
 
             st.subheader("Complete Distance Matrix with Demands")
             st.dataframe(complete_distance_matrix_display)
+            
+            st.sidebar.markdown("---") 
 
             # Ask for the maximum capacity
             max_capacity = st.sidebar.number_input("Enter the maximum capacity per tour:", min_value=1, value=50)
