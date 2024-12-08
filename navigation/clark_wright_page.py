@@ -76,7 +76,7 @@ def clark_wright_page():
         )
 
     # File upload
-    uploaded_file = st.sidebar.file_uploader("Upload your populated CSV file*", type=["csv", "xlsx"])
+    uploaded_file = st.sidebar.file_uploader("Upload your populated CSV file*", type=["csv"])
 
     # Provide template download
     template_df = create_template(max_nodes=20)
@@ -104,9 +104,6 @@ def clark_wright_page():
         # Load the file into a Pandas DataFrame
         if uploaded_file.name.endswith(".csv"):
             df = pd.read_csv(uploaded_file, index_col=0)
-        elif uploaded_file.name.endswith(".xlsx"):
-            df = pd.read_excel(uploaded_file, index_col=0)
-
         try:
             # Transform the matrix to populate missing values symmetrically
             complete_distance_matrix, demands = transform_to_complete_matrix(df)
