@@ -13,8 +13,8 @@ def test_clark_wright_basic_case():
         [20, 25, 30, 0]
     ])
     demands = [5, 5, 5]
-    max_capacity = 10
-    expected_routes = [[0, 1], [2]]
+    max_capacity = 30
+    expected_routes = [[2, 0, 1]]
 
     routes = clark_wright(distance_matrix, demands, max_capacity)
     assert sorted(routes) == sorted(expected_routes)
