@@ -32,12 +32,12 @@ routing_app/
   - Verify:
     ```shell
     $ python --version
-    Python 3.11.1
+    Python 3.11
     ```
    - Create a [virtual environment](https://docs.python.org/3/library/venv.html#creating-virtual-environments):
-   - `$ python3.11 -m venv ./env`
+   - `python3.11 -m venv ./env`
    - Activate environment:
-   - `$ source ./env/bin/activate`
+   - `source ./env/bin/activate`
    - You will know that this is successful if you see `(env)` at the start of your shell prompt
 
 ## How to Run
@@ -52,7 +52,7 @@ routing_app/
    Run tests
    We have pytest for running tests. Remember to activate your virtual environment first!
    ```shell
-   $ pytest
+   pytest
    ```
 ## Dependencies
 The app uses the following dependencies (see `requirements.txt`):
