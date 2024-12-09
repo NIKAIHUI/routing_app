@@ -27,13 +27,10 @@ def dijkstra(graph, start_node, end_node):
                 path[neighbor] = current_node
                 heapq.heappush(priority_queue, (new_distance, neighbor))
 
-    # Backtrack to find the shortest path
     shortest_path = []
     current = end_node
     while current:
         shortest_path.insert(0, current)
         current = path[current]
-    if distances[end_node] == float('inf'):
-        return float('inf'), []  # Ensure unreachable nodes return an empty path
 
     return distances[end_node], shortest_path
