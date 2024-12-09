@@ -128,7 +128,7 @@ def clark_wright_page():
 
             # Perform the Clark-Wright Savings Algorithm
             routes = clark_wright(complete_distance_matrix.iloc[:, :-1], demands, max_capacity)
-
+            total_distance = 0
             # Display results
             st.subheader("Result")
             st.write(f"How many tours are needed? {len(routes)}")
@@ -136,9 +136,12 @@ def clark_wright_page():
                 route_nodes = [complete_distance_matrix.index[node] for node in route]
 
                 # Calculate total distance for the current route
-                total_distance = calculate_route_distance(route_nodes, complete_distance_matrix)
+                subtotal_distance = calculate_route_distance(route_nodes, complete_distance_matrix)
+                total_distance += subtotal_distance
 
-                st.write(f"Tour {i + 1}: Depot -> {' -> '.join(route_nodes)} -> Depot. (Total Distance: {total_distance:.2f})")
+                st.write(f"Tour {i + 1}: Depot -> {' -> '.join(route_nodes)} -> Depot. (Subtotal distance: {total_distance:.2f})")
+            st.write(f"---")
+            st.write(f"Total distance traveled: {round(total_distance,2)}")
 
         except Exception as e:
             # Handle any errors that occur during processing
