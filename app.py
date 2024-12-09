@@ -37,7 +37,7 @@ text-align: center;
 }
 </style>
 <div class="footer">
-<p>Powered with ❤ by Kai</p>
+<p>Developed with ❤ by Kai</p>
 <p><a style='display: block; text-align: center;' href="https://www.edx.org/masters/micromasters/mitx-supply-chain-management" target="_blank">📚 Awesome learning ride with SCM MM @MITx! 🚀</a></p>
 </div>
 """
