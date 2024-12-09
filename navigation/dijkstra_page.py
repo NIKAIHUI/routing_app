@@ -54,55 +54,37 @@ def dijkstra_page():
 
     # Sidebar: Define Nodes Manually
     if not uploaded_file:
-        num_nodes = st.sidebar.number_input(
-            "How many nodes are in the graph?", min_value=2, max_value=MAX_NODES, step=1, value=3
-        )
-
+        num_nodes = st.sidebar.number_input("Number of nodes:", min_value=2, max_value=MAX_NODES, value=3, step=1)
         node_names_input = st.sidebar.text_area(
-            "Enter the names of the nodes (comma-separated, e.g., A,B,C):",
-            value=",".join(st.session_state["node_names"]),
+            "Enter node names (comma-separated):", value=",".join(st.session_state["node_names"])
         )
-
-        if st.sidebar.button("Add"):
+        if st.sidebar.button("Set Node Names"):
             node_names = [name.strip() for name in node_names_input.split(",") if name.strip()]
-            
-            # Check for duplicates in node names
             if len(node_names) != len(set(node_names)):
-                st.sidebar.error("Duplicate node names found. Please ensure all node names are unique.")
+                st.sidebar.error("Duplicate node names found. Ensure all node names are unique.")
             elif len(node_names) != num_nodes:
-                st.sidebar.error("The number of node names entered does not match the specified number of nodes.")
+                st.sidebar.error("Number of node names doesn't match the specified number of nodes.")
             else:
                 st.session_state["node_names"] = node_names
-                if not st.session_state["graph"]:
-                    st.session_state["graph"] = {node: {} for node in node_names}
-                st.sidebar.success("Node names added!")
-                
-    # Sidebar: Define Connections for Each Node
+                st.session_state["graph"] = {node: {} for node in node_names}
+                st.sidebar.success("Node names set successfully!")
+
+    # Sidebar: Define Connections
     node_names = st.session_state.get("node_names", [])
     if node_names:
-        processed_connections = set()
-
         for node in node_names:
-            st.sidebar.markdown(f"### Connections for Node: **{node}**")
             neighbors = st.sidebar.multiselect(
-                f"Select neighbors for {node}:",
-                options=[
-                    n for n in node_names
-                    if n != node and (node, n) not in processed_connections and (n, node) not in processed_connections
-                ],
+                f"Neighbors for {node}:", options=[n for n in node_names if n != node],
                 default=list(st.session_state["graph"].get(node, {}).keys()),
                 key=f"neighbors_{node}",
             )
             for neighbor in neighbors:
                 distance = st.sidebar.number_input(
-                    f"Distance from {node} to {neighbor}:",
-                    min_value=1,
-                    step=1,
+                    f"Distance from {node} to {neighbor}:", min_value=1, step=1,
                     value=st.session_state["graph"].get(node, {}).get(neighbor, 1),
                     key=f"distance_{node}_{neighbor}",
                 )
                 st.session_state["graph"].setdefault(node, {})[neighbor] = distance
-                processed_connections.add((node, neighbor))
 
     # Display Graph
     if st.session_state["graph"]:
