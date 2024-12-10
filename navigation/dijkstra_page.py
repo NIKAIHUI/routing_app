@@ -70,6 +70,14 @@ def dijkstra_page():
                 st.session_state["graph"] = {node: {} for node in node_names}
                 st.sidebar.success("Node names added!")
 
+    # Define a callback to update the graph when the user selects neighbors
+    def update_graph(node):
+        selected_neighbors = st.session_state[f"neighbors_{node}"]
+        st.session_state["graph"][node] = {
+            neighbor: st.session_state["graph"].get(node, {}).get(neighbor, 1)
+            for neighbor in selected_neighbors
+        }
+
     # Define connections
     node_names = st.session_state.get("node_names", [])
     if node_names:
@@ -89,28 +97,27 @@ def dijkstra_page():
             neighbors = st.sidebar.multiselect(
                 f"Select neighbors for {node}:",
                 options=available_neighbors,
-                default=default_neighbors,  # Filtered to avoid invalid defaults
+                default=default_neighbors,
                 key=f"neighbors_{node}",
+                on_change=update_graph,
+                args=(node,),  # Pass the current node to the callback
             )
+
+            # Add distances for each neighbor
             for neighbor in neighbors:
                 distance = st.sidebar.number_input(
-                    f"Distance from {node} to {neighbor}:", min_value=1, step=1,
+                    f"Distance from {node} to {neighbor}:", 
+                    min_value=1, step=1,
                     value=st.session_state["graph"].get(node, {}).get(neighbor, 1),
                     key=f"distance_{node}_{neighbor}",
                 )
                 st.session_state["graph"].setdefault(node, {})[neighbor] = distance
 
-            # Update the graph dynamically
-            st.session_state["graph"][node] = {
-                neighbor: st.session_state["graph"][node].get(neighbor, 1)
-                for neighbor in neighbors
-            }
-
             # Track edges to avoid redundant entries
             for neighbor in neighbors:
                 defined_edges.add((node, neighbor))
                 defined_edges.add((neighbor, node)) 
-
+                
     # Display and download the graph
     if st.session_state["graph"]:
         bidirectional_graph = compute_bidirectional_graph(st.session_state["graph"])
