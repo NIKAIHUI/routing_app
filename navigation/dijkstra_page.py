@@ -24,30 +24,56 @@ def dijkstra_page():
             "uploaded_file": None,
             "confirm_reset": False,
         })
-        
-    # Compute bidirectional graph for output
+    
+    # Function to compute the bidirectional graph dynamically
     def compute_bidirectional_graph(graph):
+        """
+        Ensures the graph is bidirectional by adding reverse connections
+        for each edge defined in the graph.
+        """
         bidirectional_graph = {}
         for node, neighbors in graph.items():
             for neighbor, distance in neighbors.items():
                 bidirectional_graph.setdefault(node, {})[neighbor] = distance
                 bidirectional_graph.setdefault(neighbor, {})[node] = distance
         return bidirectional_graph
-    
-    # Handle file upload and process graph data
-    uploaded_file = st.sidebar.file_uploader("Upload a JSON file of the graph (max 30 nodes)", type=["json"])
 
+    # Function to synchronize the graph when neighbors are selected/removed
+    def update_graph(node):
+        """
+        Updates the graph dynamically based on neighbors selected for a node.
+        """
+        selected_neighbors = st.session_state[f"neighbors_{node}"]
+
+        # Add or retain neighbors in the graph
+        for neighbor in selected_neighbors:
+            if neighbor not in st.session_state["graph"].get(node, {}):
+                # Ensure neighbor is initialized with a default distance
+                st.session_state["graph"].setdefault(node, {})[neighbor] = 1
+                st.session_state["graph"].setdefault(neighbor, {})[node] = 1
+
+        # Remove neighbors that are no longer selected
+        current_neighbors = list(st.session_state["graph"].get(node, {}).keys())
+        for old_neighbor in current_neighbors:
+            if old_neighbor not in selected_neighbors:
+                # Remove connection in both directions
+                st.session_state["graph"][node].pop(old_neighbor, None)
+                st.session_state["graph"][old_neighbor].pop(node, None)
+
+    # Upload JSON file
+    uploaded_file = st.sidebar.file_uploader("Upload Graph JSON", type=["json"])
     if uploaded_file:
         try:
-            graph_data = json.load(uploaded_file)
-            if len(graph_data) > MAX_NODES:
-                st.error(f"Graph exceeds the maximum allowed {MAX_NODES} nodes.")
-            else:
-                st.session_state["graph"] = graph_data
-                st.session_state["node_names"] = list(graph_data.keys())
-                st.success("Graph JSON uploaded successfully!")
+            uploaded_data = json.load(uploaded_file)
+
+            # Initialize the graph with uploaded data (one-time operation)
+            if not st.session_state["graph"]:
+                st.session_state["graph"] = uploaded_data
+                st.session_state["node_names"] = list(uploaded_data.keys())
+
+            st.sidebar.success("JSON file loaded! You can now edit the graph dynamically.")
         except Exception as e:
-            st.error(f"Error loading Graph JSON: {e}")
+            st.sidebar.error(f"Error reading JSON file: {e}")
 
     # Manual input for nodes and connections
     if not uploaded_file:
@@ -69,66 +95,67 @@ def dijkstra_page():
                 st.session_state["node_names"] = node_names
                 st.session_state["graph"] = {node: {} for node in node_names}
                 st.sidebar.success("Node names added!")
-
-    # Define a callback to update the graph when the user selects neighbors
-    def update_graph(node):
-        selected_neighbors = st.session_state[f"neighbors_{node}"]
-        st.session_state["graph"][node] = {
-            neighbor: st.session_state["graph"].get(node, {}).get(neighbor, 1)
-            for neighbor in selected_neighbors
-        }
-
-    # Define connections
-    node_names = st.session_state.get("node_names", [])
+    
+    # Main UI for defining nodes and connections
+    node_names = st.session_state["node_names"]
     if node_names:
-        defined_edges = set()  # Track already-defined edges
         for node in node_names:
             st.sidebar.markdown(f"### Define connections for {node}")
-            available_neighbors = [
-                n for n in node_names if n != node and (n, node) not in defined_edges
-            ]
-            
-            # Filter default values to ensure they exist in available options
-            default_neighbors = [
-                neighbor for neighbor in st.session_state["graph"].get(node, {}).keys()
-                if neighbor in available_neighbors
-            ]
 
+            # Available neighbors are all nodes except the current node
+            available_neighbors = [n for n in node_names if n != node]
+
+            # Get default neighbors from the graph
+            default_neighbors = list(st.session_state["graph"].get(node, {}).keys())
+
+            # Multiselect for neighbors
             neighbors = st.sidebar.multiselect(
                 f"Select neighbors for {node}:",
                 options=available_neighbors,
                 default=default_neighbors,
                 key=f"neighbors_{node}",
                 on_change=update_graph,
-                args=(node,),  # Pass the current node to the callback
+                args=(node,),
             )
 
-            # Add distances for each neighbor
+            # Input distances for each selected neighbor
             for neighbor in neighbors:
-                distance = st.sidebar.number_input(
-                    f"Distance from {node} to {neighbor}:", 
-                    min_value=1, step=1,
-                    value=st.session_state["graph"].get(node, {}).get(neighbor, 1),
-                    key=f"distance_{node}_{neighbor}",
-                )
-                st.session_state["graph"].setdefault(node, {})[neighbor] = distance
+                distance_key = f"distance_{node}_{neighbor}"
 
-            # Track edges to avoid redundant entries
-            for neighbor in neighbors:
-                defined_edges.add((node, neighbor))
-                defined_edges.add((neighbor, node)) 
-                
-    # Display and download the graph
+                # Ensure distance entry exists before accessing it
+                st.session_state["graph"].setdefault(node, {})[neighbor] = st.session_state["graph"].get(node, {}).get(
+                    neighbor, 1
+                )
+                st.session_state["graph"].setdefault(neighbor, {})[node] = st.session_state["graph"][node][neighbor]
+
+                # Number input for distance
+                distance = st.sidebar.number_input(
+                    f"Distance from {node} to {neighbor}:",
+                    min_value=1,
+                    value=st.session_state["graph"][node][neighbor],
+                    key=distance_key,
+                )
+
+                # Update the graph dynamically with the new distance
+                st.session_state["graph"][node][neighbor] = distance
+                st.session_state["graph"][neighbor][node] = distance  # Ensure bidirectional consistency
+
+
+    # Display the graph dynamically
     if st.session_state["graph"]:
+        # Compute the bidirectional graph dynamically
         bidirectional_graph = compute_bidirectional_graph(st.session_state["graph"])
         st.markdown("### Graph Representation (Bidirectional)")
         st.json(bidirectional_graph)
+
+        # Download button for graph JSON
         st.download_button(
             label="Download Graph as JSON",
             data=json.dumps(bidirectional_graph, indent=2),
             file_name="graph.json",
             mime="application/json",
         )
+            
     # Shortest path calculation
     if node_names and st.session_state["graph"]:
         st.markdown("### Shortest Path Calculation")
