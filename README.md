@@ -2,11 +2,11 @@
 
 This is a modular Streamlit-based application designed to solve transportation optimization problems. It includes two main functionalities:
 
-1. **Dijkstra's Algorithm** - Solves the single-source shortest path problem for graphs with non-negative edge weights.
-2. **Clark-Wright Savings Algorithm** - Optimizes vehicle routing based on savings.
+1. **Clark-Wright Savings Algorithm** - Optimizes vehicle routing based on savings.
+2. **Dijkstra's Algorithm** - Solves the single-source shortest path problem for graphs with non-negative edge weights.
 
-I have deployed this app at [routing-app.streamlit.app]([url](https://routing-app.streamlit.app)) , feel free to explore it without forking the repo
-<img width="1428" alt="Screenshot 2024-12-12 at 13 57 15" src="https://github.com/user-attachments/assets/efe3a907-a62c-47d2-9df9-05e8d0629f4f" />
+I have deployed this app at [routing-app.streamlit.app]([url](https://routing-app.streamlit.app)), feel free to explore it without forking the repo
+<img width="800" alt="Screenshot 2024-12-12 at 13 57 15" src="https://github.com/user-attachments/assets/efe3a907-a62c-47d2-9df9-05e8d0629f4f" />
 
 
 ## File Structure
