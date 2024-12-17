@@ -122,13 +122,13 @@ def dijkstra_page():
             for neighbor in neighbors:
                 distance_key = f"distance_{node}_{neighbor}"
 
-                # Ensure distance entry exists before accessing it
-                st.session_state["graph"].setdefault(node, {})[neighbor] = st.session_state["graph"].get(node, {}).get(
-                    neighbor, 1
-                )
-                st.session_state["graph"].setdefault(neighbor, {})[node] = st.session_state["graph"][node][neighbor]
+                # Initialize distance entry in the graph if not already set
+                if node not in st.session_state["graph"]:
+                    st.session_state["graph"][node] = {}
+                if neighbor not in st.session_state["graph"][node]:
+                    st.session_state["graph"][node][neighbor] = 1  # Default distance
 
-                # Number input for distance
+                # Use the number_input widget's return value directly
                 distance = st.sidebar.number_input(
                     f"Distance from {node} to {neighbor}:",
                     min_value=1,
@@ -138,8 +138,7 @@ def dijkstra_page():
 
                 # Update the graph dynamically with the new distance
                 st.session_state["graph"][node][neighbor] = distance
-                st.session_state["graph"][neighbor][node] = distance  # Ensure bidirectional consistency
-
+                st.session_state["graph"].setdefault(neighbor, {})[node] = distance  # Ensure bidirectional consistency
 
     # Display the graph dynamically
     if st.session_state["graph"]:
