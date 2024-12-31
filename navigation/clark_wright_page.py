@@ -134,12 +134,12 @@ def clark_wright_page():
             st.write(f"How many tours are needed? {len(routes)}")
             for i, route in enumerate(routes):
                 route_nodes = [complete_distance_matrix.index[node] for node in route]
-
+                depot_name = complete_distance_matrix.columns[-2]
                 # Calculate total distance for the current route
                 subtotal_distance = calculate_route_distance(route_nodes, complete_distance_matrix)
                 total_distance += subtotal_distance
 
-                st.write(f"Tour {i + 1}: Depot -> {' -> '.join(route_nodes)} -> Depot. (Subtotal distance: {total_distance:.2f})")
+                st.write(f"Tour {i + 1}: {depot_name} -> {' -> '.join(route_nodes)} -> {depot_name}. (Subtotal distance: {subtotal_distance:.2f})")
             st.write(f"---")
             st.write(f"Total distance traveled: {round(total_distance,2)}")
 
