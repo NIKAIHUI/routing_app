@@ -5,7 +5,19 @@ from navigation.dijkstra_page import dijkstra_page
 # Main App
 st.markdown("#### Algorithm Selection")
 choice = st.selectbox("Choose an algorithm to start:", ["Home", "Clark-Wright Savings Algorithm", "Dijkstra's Algorithm"])
-
+if choice == "Home":
+    st.markdown(
+        """
+        <div style="text-align: center;">
+            <a href="https://tomarange-my.sharepoint.com/:v:/p/kaihui_ni/EY4tXYHUW9VIrGghkmNRK5QBizs52_uLeYpncJ4NbYf2xw" 
+            target="_blank" 
+            style="text-decoration: none; color: #FF007F;">
+                ▶️ Watch the demo video 
+            </a>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 if choice == "Clark-Wright Savings Algorithm":
     clark_wright_page()
 elif choice == "Dijkstra's Algorithm":
